@@ -5,8 +5,27 @@ macro render_view(filename)
 end
 
 get "/" do
-  "Hello, world!"
   render_view "index"
+end
+
+get "/about" do
+  render_view "not_yet_implemented"
+end
+
+get "/animations/new" do
+  render_view "not_yet_implemented"
+end
+
+get "/animations/:uuid/edit" do
+  render_view "edit_animation"
+end
+
+get "/api/animations/%s" do
+  render_view "not_yet_implemented"
+end
+
+post "/api/animations" do
+  render_view "not_yet_implemented"
 end
 
 Kemal.run(5000)

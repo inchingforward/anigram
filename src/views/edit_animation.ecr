@@ -1,0 +1,35 @@
+<h1>Edit Animation</h1>
+    <div id="edit" style="width: 525px;">
+        <canvas id="canvas-grid" width="256" height="256" style="float:left;">
+        </canvas>
+        <div id="editor" style="float:right;">
+            <div id="frame-info">
+                <span id="frameText">Frame 1 of 1</span>
+            </div>
+            <div style="width: 200px;">
+                <span id="background-box" class="color-box"></span>
+                <span id="light-box" class="color-box"></span>
+                <span id="medium-box" class="color-box"></span>
+                <span id="dark-box" class="color-box"></span>
+                <span id="current-box" class="color-box"></span>
+            </div>
+            <div id="controls">
+                <button id="prevFrame">&lt;</button>
+                <button id="nextFrame">&gt;</button>
+                <button id="clear">Clear</button>
+                <button id="delete">Delete</button>
+                <button id="play">Play</button>
+                <button id="save">Save</button>
+            </div>
+            <div id="advanced">
+                <p>
+                    Time between frames (ms): 
+                    <input type="text" id="time" value="325" style="width:25px;">
+                </p>
+            </div>
+        </div>
+    </div>
+    <script src="/js/editor.js"></script>
+    <script>
+        Editor.init("1");
+    </script>
