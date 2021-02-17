@@ -1,0 +1,17 @@
+name: anigram
+version: 0.1.0
+
+authors:
+  - mj
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
+
+targets:
+  anigram:
+    main: src/anigram.cr
+
+crystal: 0.35.1
+
+license: MIT
