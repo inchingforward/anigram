@@ -1,3 +1,5 @@
+{% extends "layout.html" %}
+{% block content %}
 <h1>Edit Animation</h1>
     <div id="edit" style="width: 525px;">
         <canvas id="canvas-grid" width="256" height="256" style="float:left;">
@@ -29,7 +31,8 @@
             </div>
         </div>
     </div>
-    <script src="/js/editor.js"></script>
+    <script src="/static/js/editor.js"></script>
     <script>
         Editor.init("1");
     </script>
+{% endblock %}
