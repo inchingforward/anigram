@@ -29,6 +29,11 @@ var (
 	mouseDown     bool
 )
 
+func setColor(nextColor string) {
+	color = nextColor
+	currentBox.Style.SetProperty("background-color", color)
+}
+
 func prevFrame(event *dom.Event) {
 	fmt.Println("prevFrame clicked")
 }
@@ -108,31 +113,31 @@ func main() {
 	ctx.Fill()
 
 	backgroundBox = doc.GetElementById("background-box")
-	backgroundBox.Style.SetProperty("backgroundColor", background)
+	backgroundBox.Style.SetProperty("background-color", background)
 	backgroundBox.AddEventListener(dom.EvtClick, func(event *dom.Event) {
-		fmt.Println("clicked the backgroundColor")
+		setColor(background)
 	})
 
 	lightBox = doc.GetElementById("light-box")
-	lightBox.Style.SetProperty("backgroundColor", light)
+	lightBox.Style.SetProperty("background-color", light)
 	lightBox.AddEventListener(dom.EvtClick, func(event *dom.Event) {
-		fmt.Println("clicked the light color")
+		setColor(light)
 	})
 
 	mediumBox = doc.GetElementById("medium-box")
-	mediumBox.Style.SetProperty("backgroundColor", medium)
+	mediumBox.Style.SetProperty("background-color", medium)
 	mediumBox.AddEventListener(dom.EvtClick, func(event *dom.Event) {
-		fmt.Println("clicked the medium color")
+		setColor(medium)
 	})
 
 	darkBox = doc.GetElementById("dark-box")
-	darkBox.Style.SetProperty("backgroundColor", dark)
+	darkBox.Style.SetProperty("background-color", dark)
 	darkBox.AddEventListener(dom.EvtClick, func(event *dom.Event) {
-		fmt.Println("clicked the dark color")
+		setColor(dark)
 	})
 
 	currentBox = doc.GetElementById("current-box")
-	color = medium
+	setColor(medium)
 
 	doc.GetElementById("prevFrame").AddEventListener(dom.EvtClick, prevFrame)
 	doc.GetElementById("nextFrame").AddEventListener(dom.EvtClick, nextFrame)
