@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"math"
+	"strings"
+	"time"
 
 	canvas "github.com/oskca/gopherjs-canvas"
 	dom "github.com/oskca/gopherjs-dom"
@@ -26,10 +28,12 @@ var (
 	darkBox        *dom.Element
 	currentBox     *dom.Element
 	frameText      *dom.Element
+	timeInput      *dom.Element
 	color          string
 	mouseDown      bool
 	currFrameIndex int
 	anim           animation
+	emptyFrame     string
 )
 
 type serverData struct {
@@ -53,23 +57,55 @@ func setColor(nextColor string) {
 }
 
 func prevFrame(event *dom.Event) {
-	fmt.Println("prevFrame clicked")
+	nextFrameIndex := currFrameIndex - 1
+	if nextFrameIndex < 0 {
+		return
+	}
+
+	currFrameIndex = nextFrameIndex
+
+	loadFrame(anim.frames[currFrameIndex])
+	updateFrameText()
 }
 
 func nextFrame(event *dom.Event) {
-	fmt.Println("nextFrame clicked")
+	if currFrameIndex >= len(anim.frames)-1 {
+		anim.frames = append(anim.frames, emptyFrame)
+	}
+
+	currFrameIndex++
+
+	loadFrame(anim.frames[currFrameIndex])
+	updateFrameText()
 }
 
 func clear(event *dom.Event) {
-	fmt.Println("clear clicked")
+	ctx.BeginPath()
+	ctx.FillStyle = background
+	ctx.Rect(0, 0, side, side)
+	ctx.Fill()
+
+	anim.frames[currFrameIndex] = emptyFrame
 }
 
 func delete(event *dom.Event) {
 	fmt.Println("delete clicked")
 }
 
+func animate() {
+	loadFrame(anim.frames[currFrameIndex])
+	updateFrameText()
+
+	if currFrameIndex < (len(anim.frames) - 1) {
+		currFrameIndex++
+		t := timeInput.Get("value").Int()
+		time.AfterFunc(time.Duration(t)*time.Millisecond, animate)
+	}
+}
+
 func play(event *dom.Event) {
-	fmt.Println("play clicked")
+	currFrameIndex = 0
+	animate()
 }
 
 func save(event *dom.Event) {
@@ -90,14 +126,13 @@ func canvasMouseOver(event *dom.Event) {
 		return
 	}
 
-	// var boundingRect = canvas.getBoundingClientRect();
-	// var x = e.clientX - boundingRect.left;
-	// var y = e.clientY - boundingRect.top;
+	x := event.ClientX - cnvs.Call("getBoundingClientRect").Get("left").Int()
+	y := event.ClientY - cnvs.Call("getBoundingClientRect").Get("top").Int()
 
-	// var row = Math.floor(y / PIXEL_SIZE);
-	// var col = Math.floor(x / PIXEL_SIZE);
+	row := int(math.Floor(float64(y) / pixelSize))
+	col := int(math.Floor(float64(x) / pixelSize))
 
-	// fillSquareAt(row, col, color, true);
+	fillSquareAt(row, col, color, true)
 }
 
 func keyUp(event *dom.Event) {
@@ -173,10 +208,10 @@ func coordToIndex(c coord) int {
 	return c.y*pixelSize + c.x
 }
 
-func fillSquareAt(col int, row int, color string, updateAnimation bool) {
+func fillSquareAt(row int, col int, color string, updateAnimation bool) {
 	ctx.BeginPath()
 	ctx.FillStyle = color
-	ctx.Rect(float64(row)*pixelSize, float64(col)*pixelSize, pixelSize, pixelSize)
+	ctx.Rect(float64(col)*pixelSize, float64(row)*pixelSize, pixelSize, pixelSize)
 	ctx.Fill()
 
 	if updateAnimation {
@@ -185,11 +220,11 @@ func fillSquareAt(col int, row int, color string, updateAnimation bool) {
 }
 
 func updateFrameSquare(row int, col int, colorStr string) {
-	frame := anim.frames[currFrameIndex]
-	frameIndex := coordToIndex(coord{row, col})
-	color := colorToStr(color)
-	frame = anim.frames[currFrameIndex]
-	anim.frames[currFrameIndex] = string(frame[0:frameIndex]) + color + string(frame[frameIndex+1])
+	// frame := anim.frames[currFrameIndex]
+	// frameIndex := coordToIndex(coord{row, col})
+	// color := colorToStr(color)
+	// frame = anim.frames[currFrameIndex]
+	// anim.frames[currFrameIndex] = string(frame[0:frameIndex]) + color + string(frame[frameIndex+1])
 }
 
 func loadFrame(frame string) {
@@ -208,7 +243,7 @@ func updateFrameText() {
 func main() {
 	window := dom.Window()
 	doc := dom.Document()
-	cnvs := canvas.New(doc.GetElementById("canvas-grid").Object)
+	cnvs = canvas.New(doc.GetElementById("canvas-grid").Object)
 	ctx = cnvs.GetContext2D()
 
 	cnvs.Width = side
@@ -244,7 +279,7 @@ func main() {
 	})
 
 	currentBox = doc.GetElementById("current-box")
-	setColor(medium)
+	setColor(background)
 
 	doc.GetElementById("prevFrame").AddEventListener(dom.EvtClick, prevFrame)
 	doc.GetElementById("nextFrame").AddEventListener(dom.EvtClick, nextFrame)
@@ -258,7 +293,10 @@ func main() {
 	window.AddEventListener(dom.EvtMouseup, mouseUp)
 	doc.AddEventListener(dom.EvtKeyup, keyUp)
 
+	emptyFrame = strings.Repeat("0", side)
+
 	frameText = doc.GetElementById("frameText")
+	timeInput = doc.GetElementById("time")
 
 	initialData := serverData{
 		title: "Testing",
