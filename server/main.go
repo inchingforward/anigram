@@ -115,5 +115,5 @@ func main() {
 	e.GET("/api/animations/:uuid", getAnimation)
 	e.POST("/api/animations", postAnimation)
 
-	e.Logger.Fatal(e.Start(":5000"))
+	e.Logger.Fatal(e.Start(":3000"))
 }
