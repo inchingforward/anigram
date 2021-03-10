@@ -29,6 +29,7 @@ var (
 	currentBox     *dom.Element
 	frameText      *dom.Element
 	timeInput      *dom.Element
+	loopCbx        *dom.Element
 	color          string
 	mouseDown      bool
 	currFrameIndex int
@@ -100,6 +101,13 @@ func animate() {
 		currFrameIndex++
 		t := timeInput.Get("value").Int()
 		time.AfterFunc(time.Duration(t)*time.Millisecond, animate)
+	} else {
+		loop := loopCbx.Get("checked").Bool()
+		if loop {
+			currFrameIndex = 0
+			t := timeInput.Get("value").Int()
+			time.AfterFunc(time.Duration(t)*time.Millisecond, animate)
+		}
 	}
 }
 
@@ -297,6 +305,7 @@ func main() {
 
 	frameText = doc.GetElementById("frameText")
 	timeInput = doc.GetElementById("time")
+	loopCbx = doc.GetElementById("loop")
 
 	initialData := serverData{
 		title: "Testing",
