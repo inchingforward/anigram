@@ -35,6 +35,7 @@ var (
 	currFrameIndex int
 	anim           animation
 	emptyFrame     string
+	copyBuffer     string
 )
 
 type serverData struct {
@@ -87,6 +88,15 @@ func clear(event *dom.Event) {
 	ctx.Fill()
 
 	anim.frames[currFrameIndex] = emptyFrame
+}
+
+func copy(event *dom.Event) {
+	copyBuffer = anim.frames[currFrameIndex]
+}
+
+func paste(event *dom.Event) {
+	anim.frames[currFrameIndex] = copyBuffer
+	loadFrame(anim.frames[currFrameIndex])
 }
 
 func delete(event *dom.Event) {
@@ -302,6 +312,8 @@ func main() {
 	doc.GetElementById("prevFrame").AddEventListener(dom.EvtClick, prevFrame)
 	doc.GetElementById("nextFrame").AddEventListener(dom.EvtClick, nextFrame)
 	doc.GetElementById("clear").AddEventListener(dom.EvtClick, clear)
+	doc.GetElementById("copy").AddEventListener(dom.EvtClick, copy)
+	doc.GetElementById("paste").AddEventListener(dom.EvtClick, paste)
 	doc.GetElementById("delete").AddEventListener(dom.EvtClick, delete)
 	doc.GetElementById("play").AddEventListener(dom.EvtClick, play)
 	doc.GetElementById("save").AddEventListener(dom.EvtClick, save)
@@ -312,6 +324,7 @@ func main() {
 	doc.AddEventListener(dom.EvtKeyup, keyUp)
 
 	emptyFrame = strings.Repeat("0", side)
+	copyBuffer = emptyFrame
 
 	frameText = doc.GetElementById("frameText")
 	timeInput = doc.GetElementById("time")
