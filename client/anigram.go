@@ -90,7 +90,17 @@ func clear(event *dom.Event) {
 }
 
 func delete(event *dom.Event) {
-	fmt.Println("delete clicked")
+	if currFrameIndex == 0 {
+		anim.frames = anim.frames[1:]
+	} else if currFrameIndex == len(anim.frames)-1 {
+		anim.frames = anim.frames[0:currFrameIndex]
+		currFrameIndex--
+	} else {
+		anim.frames = append(anim.frames[0:currFrameIndex], anim.frames[currFrameIndex+1:]...)
+	}
+
+	loadFrame(anim.frames[currFrameIndex])
+	updateFrameText()
 }
 
 func animate() {
