@@ -58,6 +58,12 @@ func setColor(nextColor string) {
 	currentBox.Style.SetProperty("background-color", color)
 }
 
+func firstFrame(event *dom.Event) {
+	currFrameIndex = 0
+	loadFrame(anim.frames[currFrameIndex])
+	updateFrameText()
+}
+
 func prevFrame(event *dom.Event) {
 	nextFrameIndex := currFrameIndex - 1
 	if nextFrameIndex < 0 {
@@ -77,6 +83,12 @@ func nextFrame(event *dom.Event) {
 
 	currFrameIndex++
 
+	loadFrame(anim.frames[currFrameIndex])
+	updateFrameText()
+}
+
+func lastFrame(event *dom.Event) {
+	currFrameIndex = len(anim.frames) - 1
 	loadFrame(anim.frames[currFrameIndex])
 	updateFrameText()
 }
@@ -332,8 +344,10 @@ func main() {
 	currentBox = doc.GetElementById("current-box")
 	setColor(background)
 
+	doc.GetElementById("firstFrame").AddEventListener(dom.EvtClick, firstFrame)
 	doc.GetElementById("prevFrame").AddEventListener(dom.EvtClick, prevFrame)
 	doc.GetElementById("nextFrame").AddEventListener(dom.EvtClick, nextFrame)
+	doc.GetElementById("lastFrame").AddEventListener(dom.EvtClick, lastFrame)
 	doc.GetElementById("clear").AddEventListener(dom.EvtClick, clear)
 	doc.GetElementById("copy").AddEventListener(dom.EvtClick, copy)
 	doc.GetElementById("paste").AddEventListener(dom.EvtClick, paste)

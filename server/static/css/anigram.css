@@ -5,3 +5,6 @@ html,body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;}
 #legend p {margin: 0;padding: 0;}
 #legend p::first-letter {font-weight: bold;margin-right: 10px;}
 .color-box {display: inline-block; width: 20px; height: 20px; border: 1px solid black;}
+#current-box {margin-left: 40px;}
+
+button {width: 60px;}
