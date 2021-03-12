@@ -155,8 +155,30 @@ func canvasMouseOver(event *dom.Event) {
 		return
 	}
 
-	x := event.ClientX - cnvs.Call("getBoundingClientRect").Get("left").Int()
-	y := event.ClientY - cnvs.Call("getBoundingClientRect").Get("top").Int()
+	handlePaintMovement(event.ClientX, event.ClientY)
+}
+
+func touchStart(event *dom.Event) {
+	mouseDown = true
+}
+
+func touchEnd(event *dom.Event) {
+	mouseDown = false
+}
+
+func touchMove(event *dom.Event) {
+	event.PreventDefault()
+	touch := event.Get("touches").Index(0)
+
+	x := touch.Get("clientX").Int()
+	y := touch.Get("clientY").Int()
+
+	handlePaintMovement(x, y)
+}
+
+func handlePaintMovement(x, y int) {
+	x = x - cnvs.Call("getBoundingClientRect").Get("left").Int()
+	y = y - cnvs.Call("getBoundingClientRect").Get("top").Int()
 
 	row := int(math.Floor(float64(y) / pixelSize))
 	col := int(math.Floor(float64(x) / pixelSize))
@@ -321,6 +343,10 @@ func main() {
 
 	cnvs.AddEventListener(dom.EvtMousemove, canvasMouseMove)
 	cnvs.AddEventListener(dom.EvtMousedown, canvasMouseDown)
+	cnvs.AddEventListener("touchstart", touchStart)
+	cnvs.AddEventListener("touchend", touchEnd)
+	cnvs.AddEventListener("touchmove", touchMove)
+
 	window.AddEventListener(dom.EvtMouseup, mouseUp)
 	doc.AddEventListener(dom.EvtKeyup, keyUp)
 
